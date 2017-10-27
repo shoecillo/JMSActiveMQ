@@ -105,5 +105,39 @@
 	  		</plugins>
 	  	</build>
  	</profile>
+	<profile>
+  		<id>prod</id>
+	  		<build>
+	  			<plugins>
+	  				<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>copy-resources</id>
+									<!-- here the phase you need -->
+									<phase>verify</phase>
+									<goals>
+										<goal>copy-resources</goal>
+									</goals>
+									<configuration>
+										<outputDirectory>C:/DEVELOPMENT/DOCKER/appz/</outputDirectory>
+										<resources>
+											<resource>
+												<!-- Get main artifact -->
+												<directory>${basedir}/target/</directory>
+												<includes>
+													<include>${build.finalName}.jar</include>
+												</includes>
+												<!-- Don't filter binary files -->
+												<filtering>false</filtering>
+											</resource>
+										</resources>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+			  		</plugins>
+			  	</build>
+		 	</profile>
   </profiles>
 </project>
