@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>MQManagement</module>
+        <module>MQWriter</module>
 		<module>MQReader</module>
     </modules>
 
