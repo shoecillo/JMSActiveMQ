@@ -36,7 +36,7 @@ public class MQReaderApp
 	@Value("${jms.queue.name}")
     private String queueName;
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(MQReaderApp.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MQReaderApp.class);
 
 	public static void main(String[] args) 
 	{
