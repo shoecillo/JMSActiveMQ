@@ -16,12 +16,17 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 import org.springframework.jms.listener.adapter.MessageListenerAdapter;
-import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 
 import com.sh.listener.MsgListenerQueue;
 import com.sh.listener.MsgListenerTopic;
 
+/**
+ * 
+ * @author shoe011
+ * SpringBoot application configuration for JMS
+ *
+ */
 @SpringBootApplication
 @ComponentScan(basePackages="com.sh")
 public class MQReaderApp 
@@ -43,6 +48,12 @@ public class MQReaderApp
 		SpringApplication.run(MQReaderApp.class, args);
 	}
 	
+	/**
+	 * ActiveMQ implementation for connection factory.
+	 * If you want to use other messaging engine,you have to implement it here.
+	 * In this case,ActiveMQConnectionFactory.
+	 * @return ConnectionFactory - JMS interface
+	 **/
 	@Bean
     public ConnectionFactory connectionFactory(){
  		LOGGER.debug("<<<<<< Loading connectionFactory");
@@ -51,10 +62,11 @@ public class MQReaderApp
         LOGGER.debug(MessageFormat.format("{0} loaded sucesfully >>>>>>>", broker));
         return connectionFactory;
     }
-    /*
-     * Optionally you can use cached connection factory if performance is a big concern.
-     */
- 
+	
+    /**
+     * Catching connection factory for better performance if big load
+     * @return ConnectionFactory - cachingConnection
+     **/
     @Bean
     public ConnectionFactory cachingConnectionFactory(){
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
@@ -63,38 +75,14 @@ public class MQReaderApp
         return connectionFactory;
     }
     
-    /*
-     * Topic listener container, used for invoking messageReceiver.onMessage on message reception.
-     */
-    @Bean(name = "jmsTopic")
-    public SimpleMessageListenerContainer getTopic(MessageListenerAdapter adapterTopic){
-    	LOGGER.debug("<<<<<< Loading Listener topic");
-    	SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory());
-        container.setDestinationName(topicName);
-        container.setMessageListener(adapterTopic);
-        container.setPubSubDomain(true);
-        LOGGER.debug("Listener topic loaded >>>>>>>>>");
-        
-        return container;
-    }
-    
-    /*
-     * Queue listener container, used for invoking messageReceiver.onMessage on message reception.
-     */
-    @Bean(name = "jmsQueue")
-    public SimpleMessageListenerContainer getQueue(MessageListenerAdapter adapterQueue){
-    	LOGGER.debug("<<<<<< Loading Listener Queue");
-    	SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory());
-        container.setDestinationName(queueName);
-        container.setMessageListener(adapterQueue);
-        container.setPubSubDomain(false);
-        LOGGER.debug("Listener Queue loaded >>>>>>>");
-        
-        return container;
-    }
-    
+    /**
+     * Message listener adapter configuration for topic reception.
+     * MsgListenerTopic class implements in method onMessage
+     * @param topic - MsgListenerTopic
+     * @see MsgListenerTopic
+     * @return MessageListenerAdapter
+     * @see MessageListenerAdapter
+     **/
     @Bean(name = "adapterTopic")
     public MessageListenerAdapter adapterTopic(MsgListenerTopic topic)
     {
@@ -105,6 +93,14 @@ public class MQReaderApp
     	
     }
     
+    /**
+     * Message listener adapter configuration for queue reception.
+     * MsgListenerQueue class implements in method onMessage
+     * @param queue - MsgListenerQueue
+     * @see MsgListenerQueue
+     * @return MessageListenerAdapter
+     * @see MessageListenerAdapter
+     **/
     @Bean(name = "adapterQueue")
     public MessageListenerAdapter adapterQueue(MsgListenerQueue queue)
     {
@@ -115,10 +111,55 @@ public class MQReaderApp
     	
     }
     
-    /*
-     * Used for Sending Messages to topic.
-     */
+    /**
+     * Topic listener container.
+     * This method configure a listener for a topic
+     * @param adapterTopic -  MessageListenerAdapter
+     * @see MessageListenerAdapter
+     * @see SimpleMessageListenerContainer
+     **/
+    @Bean(name = "jmsTopic")
+    public SimpleMessageListenerContainer getTopic(MessageListenerAdapter adapterTopic){
+    	LOGGER.debug("<<<<<< Loading Listener topic");
+    	SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+    	// settings for listener: connectonFactory,Topic name,MessageListener and PubSubDomain (true if is a topic)
+        container.setConnectionFactory(connectionFactory());
+        container.setDestinationName(topicName);
+        container.setMessageListener(adapterTopic);
+        container.setPubSubDomain(true);
+        LOGGER.debug("Listener topic loaded >>>>>>>>>");
+        
+        return container;
+    }
     
+    /**
+     * Queue listener container.
+     * This method configure a listener for a queue
+     * @param adapterQueue -  MessageListenerAdapter
+     * @see MessageListenerAdapter
+     * @see SimpleMessageListenerContainer
+     **/
+    @Bean(name = "jmsQueue")
+    public SimpleMessageListenerContainer getQueue(MessageListenerAdapter adapterQueue){
+    	LOGGER.debug("<<<<<< Loading Listener Queue");
+    	SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+    	// settings for listener: connectonFactory,Topic name,MessageListener and PubSubDomain (false if is a queue)
+        container.setConnectionFactory(connectionFactory());
+        container.setDestinationName(queueName);
+        container.setMessageListener(adapterQueue);
+        container.setPubSubDomain(false);
+        LOGGER.debug("Listener Queue loaded >>>>>>>");
+        
+        return container;
+    }
+    
+    
+   
+    /**
+     * Sender configuration for topic 
+     * @return JmsTemplate
+     * @see JmsTemplate
+     */
     @Bean(name = "jmsTemplateTopic")
     public JmsTemplate jmsTemplateTopic(){
     	LOGGER.debug("<<<<<< Loading jmsTemplateTopic");
@@ -130,11 +171,4 @@ public class MQReaderApp
         
         return template;
     }
-    
-     
-    @Bean
-    public MessageConverter converter(){
-        return new SimpleMessageConverter();
-    }
-
 }
