@@ -32,7 +32,7 @@ public class SenderCtrl {
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(SenderCtrl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(SenderCtrl.class);
 	
 	
 	@RequestMapping(value="/sendTopic",method=RequestMethod.POST)

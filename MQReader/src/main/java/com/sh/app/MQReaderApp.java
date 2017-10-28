@@ -36,7 +36,7 @@ public class MQReaderApp
 	@Value("${jms.queue.name}")
     private String queueName;
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(MQReaderApp.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(MQReaderApp.class);
 
 	public static void main(String[] args) 
 	{
@@ -98,21 +98,21 @@ public class MQReaderApp
     @Bean(name = "adapterTopic")
     public MessageListenerAdapter adapterTopic(MsgListenerTopic topic)
     {
-    	return new MessageListenerAdapter(topic) 
-    	{{
-    		setDefaultListenerMethod("onMessage");
-    		setMessageConverter(new SimpleMessageConverter());
-    	}};
+    	MessageListenerAdapter listener = new MessageListenerAdapter(topic);
+    	listener.setDefaultListenerMethod("onMessage");
+    	listener.setMessageConverter(new SimpleMessageConverter());
+    	return listener;
+    	
     }
     
     @Bean(name = "adapterQueue")
     public MessageListenerAdapter adapterQueue(MsgListenerQueue queue)
     {
-    	return new MessageListenerAdapter(queue) 
-    	{{
-    		setDefaultListenerMethod("onMessage");
-    		setMessageConverter(new SimpleMessageConverter());
-    	}};
+    	MessageListenerAdapter listener =  new MessageListenerAdapter(queue); 
+    	listener.setDefaultListenerMethod("onMessage");
+    	listener.setMessageConverter(new SimpleMessageConverter());
+    	return listener;
+    	
     }
     
     /*
