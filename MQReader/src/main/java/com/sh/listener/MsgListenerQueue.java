@@ -16,7 +16,7 @@ public class MsgListenerQueue {
 	@Qualifier("jmsTemplateTopic")
 	private JmsTemplate jmsTemplateTopic;
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(MsgListenerQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MsgListenerQueue.class);
 	
 	public void onMessage(String msg) 
 	{

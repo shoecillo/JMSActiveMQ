@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MsgListenerTopic {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(MsgListenerTopic.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MsgListenerTopic.class);
 	
 	public void onMessage(String msg) 
 	{

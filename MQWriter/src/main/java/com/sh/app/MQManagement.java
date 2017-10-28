@@ -32,7 +32,7 @@ public class MQManagement {
 	@Value("${jms.queue.name}")
     private String queueName;
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(MQManagement.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MQManagement.class);
 
 
 	public static void main(String[] args) {
