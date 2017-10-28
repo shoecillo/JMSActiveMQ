@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 
+ * @author shoe011
+ *
+ */
 @RestController
 public class SenderCtrl {
 	
@@ -34,7 +39,11 @@ public class SenderCtrl {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SenderCtrl.class);
 	
-	
+	/**
+	 * REST method for send a message to topic
+	 * @param msg - String
+	 * @return String - result
+	 */
 	@RequestMapping(value="/sendTopic",method=RequestMethod.POST)
 	public String sendTopic(@RequestBody String msg)
 	{		
@@ -49,7 +58,11 @@ public class SenderCtrl {
 			return e.getMessage();
 		}
 	}
-	
+	/**
+	 * REST method for send a message to queue
+	 * @param msg - String
+	 * @return String - result
+	 */
 	@RequestMapping(value="/sendQueue",method=RequestMethod.POST)
 	public String sendQueue(@RequestBody String msg)
 	{		
@@ -65,6 +78,10 @@ public class SenderCtrl {
 		}
 	}
 	
+	/**
+	 * Send all messages from text file,one per line
+	 * @return String - result
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/sendFromFIle",method=RequestMethod.GET)
 	public String sendFromFile()
@@ -86,6 +103,11 @@ public class SenderCtrl {
 		
 	}
 	
+	/**
+	 * Create a thread for iterate and send messages to Queue from list
+	 * @param ls - List&lt;String&gt; 
+	 * @return Thread - created thread
+	 */
 	private Thread createThread(List<String> ls)
 	{
 		Runnable hilo = new Runnable() 
